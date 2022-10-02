@@ -223,32 +223,6 @@ function NFTDropPage({ collection }: Props) {
 
 export default NFTDropPage;
 
-export const getStaticPaths = async () => {
-	const query = `*[_type == "collection"]{
-        _id,
-        slug {
-            current
-        },
-      }`;
-
-	const collections = await sanityClient.fetch(query);
-
-	console.log(collections);
-
-	const paths = collections.map((collection: Collection) => ({
-		params: {
-			id: collection.slug.current,
-		},
-	}));
-
-	console.log(paths);
-
-	return {
-		paths,
-		fallback: "blocking",
-	};
-};
-
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 	const query = `*[_type == "collection" && slug.current == $id][0]{
         _id,
@@ -291,7 +265,5 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 		props: {
 			collection,
 		},
-
-		revalidate: 60, // after 60 seconds, itll update the old cached version
 	};
 };
